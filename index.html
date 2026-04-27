@@ -24,6 +24,16 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--white);color:var(--black);font-family:var(--sans);overflow-x:hidden}
+#auth-gate{position:fixed;inset:0;z-index:9999;background:var(--black);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+#auth-gate.hidden{display:none}
+.auth-title{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--pink)}
+.auth-input{background:transparent;border:1.5px solid rgba(201,42,57,.4);padding:12px 20px;font-family:var(--mono);font-size:16px;color:var(--white);letter-spacing:.15em;text-align:center;outline:none;width:200px;transition:border-color .2s}
+.auth-input:focus{border-color:var(--pink)}
+.auth-input::placeholder{color:rgba(245,244,239,.25);font-size:13px}
+.auth-btn{background:var(--pink);color:var(--black);border:none;padding:12px 32px;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:opacity .15s}
+.auth-btn:hover{opacity:.85}
+.auth-error{font-family:var(--mono);font-size:11px;color:var(--pink);opacity:0;transition:opacity .3s;min-height:16px}
+.auth-error.show{opacity:1}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--black);display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:52px;border-bottom:2px solid var(--pink)}
@@ -279,6 +289,25 @@ footer{background:var(--black);border-top:2px solid var(--pink);padding:32px 48p
 </style>
 </head>
 <body>
+
+<div id="auth-gate">
+  <div class="auth-title">Введите пароль</div>
+  <input type="password" class="auth-input" id="auth-pass" placeholder="••••" autofocus>
+  <button class="auth-btn" onclick="checkAuth()">Войти</button>
+  <div class="auth-error" id="auth-error">Неверный пароль</div>
+</div>
+<script>
+(function(){
+  var p='0987';
+  if(sessionStorage.getItem('auth')===p){document.getElementById('auth-gate').classList.add('hidden');return}
+  window.checkAuth=function(){
+    var v=document.getElementById('auth-pass').value;
+    if(v===p){sessionStorage.setItem('auth',v);document.getElementById('auth-gate').classList.add('hidden')}
+    else{var e=document.getElementById('auth-error');e.classList.add('show');setTimeout(function(){e.classList.remove('show')},1500)}
+  };
+  document.getElementById('auth-pass').addEventListener('keydown',function(e){if(e.key==='Enter')checkAuth()});
+})();
+</script>
 
 <nav>
   <div class="nav-logo">ДП&thinsp;/&thinsp;Nano Banana</div>
