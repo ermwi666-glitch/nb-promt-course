@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ДЕЛАЕМ ПРОМТЫ — Nano Banana Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink: #c92a39;
+  --black: #1D252D;
+  --white: #F5F4EF;
+  --cream: #EBE6DF;
+  --gray: #B2BAC0;
+  --gray-dark: #586570;
+  --slate: #273038;
+  --red-dark: #8B1E2A;
+  --red-muted: #D4888F;
+  --mono: 'Space Mono', monospace;
+  --sans: 'Space Grotesk', sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--white);color:var(--black);font-family:var(--sans);overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--black);display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:52px;border-bottom:2px solid var(--pink)}
+.nav-logo{font-family:var(--mono);font-size:13px;color:var(--pink);letter-spacing:.08em;font-weight:700;text-transform:uppercase}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{font-family:var(--mono);font-size:11px;color:var(--gray);text-decoration:none;letter-spacing:.12em;text-transform:uppercase;transition:color .15s}
+.nav-links a:hover{color:var(--pink)}
+#progress-bar{position:fixed;top:52px;left:0;height:3px;background:var(--pink);width:0%;z-index:99;transition:width .1s}
+
+section{padding:100px 0}
+.container{max-width:1200px;margin:0 auto;padding:0 48px}
+
+.label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gray-dark);margin-bottom:16px}
+.label-pink{color:var(--pink)}
+
+/* HERO */
+#hero{min-height:100vh;background:var(--black);display:flex;flex-direction:column;justify-content:flex-end;padding-top:52px;position:relative;overflow:hidden}
+.hero-bg-text{position:absolute;top:50%;right:-40px;transform:translateY(-50%);font-family:var(--mono);font-size:clamp(180px,25vw,340px);font-weight:700;color:transparent;-webkit-text-stroke:1px rgba(201,42,57,.15);line-height:1;user-select:none;pointer-events:none;white-space:nowrap}
+.hero-codes{position:absolute;top:80px;right:48px;text-align:right;font-family:var(--mono);font-size:11px;color:rgba(201,42,57,.5);line-height:1.8;letter-spacing:.1em}
+.hero-bottom{position:relative;z-index:2;padding:0 48px 80px;display:grid;grid-template-columns:1fr auto;align-items:flex-end;gap:48px;pointer-events:none}
+.hero-tag{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--pink);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.hero-tag::before{content:'';display:block;width:32px;height:2px;background:var(--pink)}
+.hero-title{font-size:clamp(64px,10vw,148px);font-weight:700;line-height:.9;color:var(--white);letter-spacing:-.02em;text-transform:uppercase}
+.hero-title span{color:var(--pink)}
+.hero-meta{display:flex;flex-direction:column;gap:24px;align-items:flex-end;padding-bottom:8px}
+.hero-stat-num{font-family:var(--mono);font-size:42px;font-weight:700;color:var(--pink);line-height:1;text-align:right}
+.hero-stat-label{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.15em;text-transform:uppercase;margin-top:4px;text-align:right}
+.hero-strip{background:var(--pink);padding:12px 48px;display:flex;justify-content:space-between;align-items:center}
+.hero-strip-text{font-family:var(--mono);font-size:11px;color:var(--black);letter-spacing:.15em;text-transform:uppercase;font-weight:700}
+#hero{min-height:100vh;background:var(--black);display:flex;flex-direction:column;justify-content:flex-end;padding-top:52px;position:relative;overflow:hidden}
+.hero-orbs{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none}
+.hero-orb{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(201,42,57,.6),rgba(201,42,57,.15));filter:blur(30px);pointer-events:none;z-index:1;will-change:transform}
+.hero-orbs-active .hero-orb{pointer-events:auto}
+.hero-float-text{position:absolute;font-family:var(--mono);font-size:14px;font-weight:300;color:rgba(245,244,239,.35);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;pointer-events:none;z-index:1;will-change:transform}
+
+/* TICKER */
+.ticker-wrap{background:var(--pink);overflow:hidden;padding:10px 0;white-space:nowrap}
+.ticker{display:inline-block;animation:ticker 20s linear infinite}
+.ticker span{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--black);padding:0 32px}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* INTRO */
+#intro{background:var(--white);padding:80px 0}
+.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.intro-models{display:flex;flex-direction:column;gap:2px}
+.model-card{border:2px solid var(--black);padding:24px 28px;display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
+.model-card.dark{background:var(--black);color:var(--white)}
+.model-card.red{background:var(--pink);color:var(--black)}
+.model-card.mid{background:var(--slate);color:var(--white);border-color:var(--slate)}
+.model-name{font-size:22px;font-weight:700;letter-spacing:-.01em;text-transform:uppercase}
+.model-sub{font-family:var(--mono);font-size:10px;opacity:.6;letter-spacing:.1em;margin-top:4px}
+.model-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.tag{font-family:var(--mono);font-size:9px;padding:3px 8px;border:1px solid currentColor;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.intro-text h2{font-size:clamp(36px,5vw,64px);font-weight:700;line-height:1.05;letter-spacing:-.02em;text-transform:uppercase;margin-bottom:24px}
+.intro-text p{font-size:17px;line-height:1.7;color:#3a4048;margin-bottom:16px}
+.time-badge{display:inline-flex;align-items:center;gap:8px;background:var(--pink);color:var(--black);padding:6px 16px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+
+/* CHAPTER HERO */
+.chapter-hero{background:var(--black);padding:48px;display:flex;align-items:center;gap:32px}
+.chapter-num{font-family:var(--mono);font-size:clamp(80px,12vw,140px);font-weight:700;color:var(--pink);line-height:1;flex-shrink:0}
+.chapter-title-block .label{color:var(--pink)}
+.chapter-title-block h2{font-size:clamp(32px,5vw,68px);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:-.02em;line-height:1}
+
+/* CONTENT BLOCK */
+.content-block{background:var(--white);padding:64px 48px;border-left:4px solid var(--pink);margin-bottom:2px}
+.content-block h3{font-size:28px;font-weight:700;letter-spacing:-.01em;text-transform:uppercase;margin-bottom:20px}
+.content-block p{font-size:16px;line-height:1.75;color:#2e363d;max-width:720px}
+.content-block p+p{margin-top:12px}
+
+/* ═══ PROMPT BLOCK (EN + RU + PHOTO) ═══ */
+.prompt-block{display:grid;grid-template-columns:1fr 340px;gap:4px;margin:28px 0}
+.prompt-texts{display:flex;flex-direction:column;gap:2px}
+
+.prompt-en{
+  background:var(--black);
+  border-left:4px solid var(--pink);
+  padding:24px 28px;
+  position:relative;
+}
+.prompt-en::before{
+  content:attr(data-shot);
+  position:absolute;top:12px;right:16px;
+  font-family:var(--mono);font-size:9px;
+  color:var(--pink);letter-spacing:.2em;text-transform:uppercase;
+  border:1px solid rgba(201,42,57,.3);padding:2px 8px;
+}
+.prompt-en .lang-tag{display:inline-block;font-family:var(--mono);font-size:9px;color:var(--pink);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px;border:1px solid var(--pink);padding:2px 8px}
+.prompt-en p{font-family:var(--mono);font-size:13px;line-height:1.85;color:rgba(245,244,239,.88)}
+.prompt-en .h{color:var(--red-muted);font-weight:700}
+
+.prompt-ru{
+  background:var(--cream);
+  border-left:4px solid var(--gray);
+  padding:20px 28px;
+}
+.prompt-ru .lang-tag{display:inline-block;font-family:var(--mono);font-size:9px;color:var(--gray-dark);letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px;border:1px solid var(--gray);padding:2px 8px}
+.prompt-ru p{font-size:14px;line-height:1.8;color:#3a4048;font-style:italic}
+.prompt-ru p strong{font-style:normal;color:var(--red-dark);font-weight:600}
+
+/* PHOTO SLOT */
+.photo-slot{display:flex;flex-direction:column;gap:0}
+.photo-num-bar{background:var(--pink);padding:8px 16px;display:flex;justify-content:space-between;align-items:center}
+.photo-num-bar .pn{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--black);line-height:1}
+.photo-num-bar .pt{font-family:var(--mono);font-size:9px;color:rgba(29,37,45,.7);letter-spacing:.15em;text-transform:uppercase}
+.photo-area{
+  background:#D8D3CC;
+  border:2px dashed #B5AFA8;
+  border-top:none;
+  flex:1;
+  min-height:220px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  color:#8A847D;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  text-align:center;padding:16px;
+}
+.photo-area svg{opacity:.4}
+.photo-area:has(img){background:none;border:none;padding:0}
+.photo-hint{background:var(--black);padding:6px 16px;font-family:var(--mono);font-size:9px;color:rgba(201,42,57,.6);letter-spacing:.15em;text-align:center;text-transform:uppercase}
+
+/* FORMULA BOX */
+.formula-box{background:var(--black);color:var(--white);padding:40px 48px;margin:32px 0;position:relative;overflow:hidden}
+.formula-box::before{content:'FORMULA';position:absolute;top:16px;right:24px;font-family:var(--mono);font-size:10px;color:var(--pink);letter-spacing:.2em}
+.formula-text{font-family:var(--mono);font-size:clamp(13px,2vw,18px);line-height:1.8;color:var(--pink);word-break:break-word}
+.formula-text span{color:rgba(245,244,239,.45)}
+
+/* TERM LIST */
+.term-list{display:flex;flex-direction:column;margin-top:24px}
+.term-item{display:flex;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #D5D0C8}
+.term-item:first-child{border-top:1px solid #D5D0C8}
+.term-en{font-family:var(--mono);font-size:12px;color:var(--pink);min-width:180px;text-transform:uppercase;letter-spacing:.08em;flex-shrink:0}
+.term-ru{font-size:15px;color:var(--black);line-height:1.5}
+
+/* PINK BLOCK */
+.pink-block{background:var(--pink);padding:40px 48px;margin:24px 0}
+.pink-block h3{font-size:22px;font-weight:700;text-transform:uppercase;margin-bottom:16px;letter-spacing:-.01em}
+.pink-block p,.pink-block li{font-size:15px;line-height:1.7}
+.pink-block ul{padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.pink-block li::before{content:'→ ';font-family:var(--mono);font-weight:700}
+
+/* DO/DONT */
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:24px}
+.do-block{background:var(--black);padding:28px}
+.do-block .label-top{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px;color:var(--pink)}
+.dont-block{background:var(--cream);padding:28px}
+.dont-block .label-top{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px;color:var(--gray-dark)}
+.check-item{display:flex;gap:10px;margin-bottom:10px;align-items:baseline}
+.check-icon{font-family:var(--mono);font-size:12px;font-weight:700;flex-shrink:0}
+.do-block .check-icon{color:var(--pink)}
+.dont-block .check-icon{color:var(--gray-dark)}
+.do-block .check-text{font-size:14px;line-height:1.6;color:var(--white)}
+.dont-block .check-text{font-size:14px;line-height:1.6;color:var(--black)}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.two-col-3-2{display:grid;grid-template-columns:3fr 2fr;gap:4px}
+
+/* COMPARE TABLE */
+.compare-table{width:100%;border-collapse:collapse;font-size:15px}
+.compare-table th{background:var(--black);color:var(--white);padding:16px 20px;text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:400}
+.compare-table th:nth-child(3){color:var(--pink)}
+.compare-table td{padding:14px 20px;border-bottom:1px solid var(--gray);line-height:1.5}
+.compare-table tr:nth-child(even) td{background:var(--cream)}
+.compare-table td:first-child{font-family:var(--mono);font-size:12px;color:var(--gray-dark);text-transform:uppercase;letter-spacing:.08em}
+.badge-pro{background:var(--pink);color:var(--black);padding:2px 8px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em}
+.badge-v2{background:var(--black);color:var(--white);padding:2px 8px;font-family:var(--mono);font-size:10px;letter-spacing:.1em}
+
+/* WORKFLOW STEPS */
+.workflow-steps{display:flex;flex-direction:column;gap:2px;margin-top:24px}
+.workflow-step{display:grid;grid-template-columns:80px 1fr}
+.step-num-block{background:var(--black);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:32px;font-weight:700;color:var(--pink)}
+.step-content{background:var(--cream);padding:24px 28px;border:2px solid var(--black);border-left:none}
+.step-content h4{font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;margin-bottom:8px}
+.step-content p{font-size:14px;line-height:1.65;color:#3a4048}
+
+/* META PROMPT */
+.meta-prompt{background:var(--black);border-left:4px solid var(--pink);padding:28px 32px;margin:24px 0}
+.meta-prompt .mp-label{font-family:var(--mono);font-size:10px;color:var(--pink);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+.meta-prompt p{font-family:var(--mono);font-size:13px;color:rgba(245,244,239,.85);line-height:1.8}
+.meta-prompt p em{color:var(--pink);font-style:normal}
+
+/* IMG PLACEHOLDER (generic) */
+.img-placeholder{background:var(--cream);border:2px dashed var(--gray);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--gray-dark);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.img-placeholder svg{opacity:.4}
+.sep{height:2px;background:var(--black);margin:0}
+
+/* ASPECT GRID */
+.aspect-grid{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-top:24px}
+.aspect-item{display:flex;flex-direction:column;align-items:center;gap:8px}
+.aspect-box{background:var(--black);border:2px solid var(--pink)}
+.aspect-label{font-family:var(--mono);font-size:10px;color:var(--gray-dark);letter-spacing:.08em}
+
+/* TEST */
+#test{background:var(--black);padding:80px 0}
+.test-header{display:flex;align-items:baseline;gap:24px;margin-bottom:48px}
+.test-header h2{font-size:clamp(48px,8vw,96px);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:-.02em;line-height:1}
+.test-header h2 span{color:var(--pink)}
+.test-info{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.4);letter-spacing:.12em;text-transform:uppercase;line-height:1.8}
+.test-progress-line{height:3px;background:#222;margin-bottom:32px}
+.test-progress-fill{height:100%;background:var(--pink);transition:width .3s}
+.test-question{background:#192028;border:1px solid #283540;padding:32px;margin-bottom:12px;display:none}
+.test-question.active{display:block}
+.q-num{font-family:var(--mono);font-size:11px;color:var(--pink);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px}
+.q-text{font-size:17px;font-weight:600;color:var(--white);line-height:1.5;margin-bottom:24px}
+.q-options{display:flex;flex-direction:column;gap:8px}
+.q-option{background:#1e2d38;border:1.5px solid #2e3f4c;padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .15s;color:var(--white);font-size:15px;line-height:1.4;text-align:left;width:100%;font-family:var(--sans)}
+.q-option:hover:not(.disabled){border-color:var(--pink);background:#2a1f22}
+.opt-letter{font-family:var(--mono);font-size:12px;color:var(--gray-dark);flex-shrink:0;width:20px}
+.q-option.correct{border-color:#2ECC71;background:#0d2a1a}
+.q-option.correct .opt-letter{color:#2ECC71}
+.q-option.wrong{border-color:var(--pink);background:#2a0e12}
+.q-option.wrong .opt-letter{color:var(--pink)}
+.q-option.disabled{cursor:default}
+.q-feedback{margin-top:16px;padding:12px 16px;font-family:var(--mono);font-size:13px;line-height:1.6;display:none}
+.q-feedback.show{display:block}
+.q-feedback.correct-fb{background:#0d2a1a;color:#2ECC71;border-left:3px solid #2ECC71}
+.q-feedback.wrong-fb{background:#2a0e12;color:#D4888F;border-left:3px solid var(--pink)}
+.test-nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px}
+.btn{background:var(--pink);color:var(--black);border:none;padding:14px 32px;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn:disabled{opacity:.3;cursor:default}
+.btn-ghost{background:transparent;color:var(--gray);border:1.5px solid #333;padding:14px 32px;font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .15s}
+.btn-ghost:hover{border-color:var(--pink);color:var(--white)}
+#result-screen{display:none;background:var(--black);padding:80px 48px;text-align:center;border:2px solid var(--pink);margin-top:16px}
+#result-screen.show{display:block}
+.result-pct{font-family:var(--mono);font-size:clamp(80px,15vw,160px);font-weight:700;line-height:1;color:var(--pink)}
+.result-label{font-family:var(--mono);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:8px;margin-bottom:40px}
+.result-pass{font-size:32px;font-weight:700;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:16px}
+.result-pass.pass{color:#2ECC71}
+.result-pass.fail{color:var(--pink)}
+.result-detail{font-family:var(--mono);font-size:14px;color:rgba(255,255,255,.5);letter-spacing:.08em;margin-bottom:40px}
+.result-hint{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;margin-top:32px;border-top:1px solid #222;padding-top:24px}
+.btn-restart{background:transparent;color:var(--white);border:1.5px solid #444;padding:14px 32px;font-family:var(--mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;margin-top:24px;transition:all .15s}
+.btn-restart:hover{border-color:var(--pink);color:var(--pink)}
+
+/* FOOTER */
+footer{background:var(--black);border-top:2px solid var(--pink);padding:32px 48px;display:flex;justify-content:space-between;align-items:center}
+.footer-logo{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--pink);letter-spacing:.08em;text-transform:uppercase}
+.footer-info{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.1em;text-align:right;line-height:1.8}
+
+@media(max-width:900px){
+  .prompt-block{grid-template-columns:1fr}
+  .photo-slot{min-height:200px}
+}
+@media(max-width:768px){
+  .container{padding:0 24px}
+  .hero-bottom{grid-template-columns:1fr;gap:32px;padding:0 24px 48px}
+  .intro-grid,.two-col,.two-col-3-2,.do-dont{grid-template-columns:1fr}
+  .chapter-hero{padding:32px 24px}
+  .content-block{padding:40px 24px}
+  .nav-links{display:none}
+  footer{flex-direction:column;gap:16px;text-align:center}
+  .footer-info{text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">ДП&thinsp;/&thinsp;Nano Banana</div>
+  <ul class="nav-links">
+    <li><a href="#basics">Основы</a></li>
+    <li><a href="#formula">Формула</a></li>
+    <li><a href="#advanced">Продвинутые</a></li>
+    <li><a href="#chatgpt">ChatGPT</a></li>
+    <li><a href="#comparison">v2 vs Pro</a></li>
+    <li><a href="#test">Тест</a></li>
+  </ul>
+</nav>
+<div id="progress-bar"></div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-orbs" id="hero-orbs">
+    <div class="hero-orb" data-orb="0"></div>
+    <div class="hero-orb" data-orb="1"></div>
+    <div class="hero-orb" data-orb="2"></div>
+    <div class="hero-orb" data-orb="3"></div>
+    <div class="hero-orb" data-orb="4"></div>
+    <div class="hero-orb" data-orb="5"></div>
+    <div class="hero-float-text" data-ft="0">кривое тз</div>
+    <div class="hero-float-text" data-ft="1">кривой промт</div>
+    <div class="hero-float-text" data-ft="2">кривые ручки</div>
+  </div>
+
+  <div class="hero-codes">NANO&nbsp;BANANA&nbsp;PRO<br>MODEL:&nbsp;GEMINI-3-PRO-IMAGE<br>BUILD:&nbsp;2026.04<br>STATUS:&nbsp;ACTIVE<br>─────────────────<br>COURSE&nbsp;LEVEL:&nbsp;01–07<br>LANG:&nbsp;RU<br>READ:&nbsp;~20&nbsp;MIN</div>
+  <div class="hero-bottom">
+    <div>
+      <div class="hero-tag">Курс по промтингу изображений</div>
+      <h1 class="hero-title">Делаем<br><span>промты</span></h1>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-stat"><div class="hero-stat-num">07</div><div class="hero-stat-label">разделов</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">20'</div><div class="hero-stat-label">чтения</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">80%</div><div class="hero-stat-label">порог теста</div></div>
+    </div>
+  </div>
+  <div class="hero-strip">
+    <span class="hero-strip-text">Nano Banana / Gemini 3 Pro Image</span>
+    <span class="hero-strip-text">Nano Banana 2 / Gemini 3.1 Flash</span>
+    <span class="hero-strip-text">ChatGPT → NB Workflow</span>
+  </div>
+</section>
+
+<div class="ticker-wrap"><div class="ticker"><span>Subject</span><span>+</span><span>Action</span><span>+</span><span>Location</span><span>+</span><span>Composition</span><span>+</span><span>Style</span><span>★</span><span>Subject</span><span>+</span><span>Action</span><span>+</span><span>Location</span><span>+</span><span>Composition</span><span>+</span><span>Style</span><span>★</span><span>Subject</span><span>+</span><span>Action</span><span>+</span><span>Location</span><span>+</span><span>Composition</span><span>+</span><span>Style</span><span>★</span></div></div>
+
+<!-- INTRO -->
+<section id="intro">
+  <div class="container">
+    <div class="intro-grid">
+      <div>
+        <div class="label">Что такое Nano Banana</div>
+        <div class="intro-text">
+          <h2>Три модели.<br>Одна <span style="color:var(--pink)">система.</span></h2>
+          <p>Nano Banana — народное название линейки генеративных моделей изображений от Google DeepMind на базе Gemini 3. Они понимают сложные текстовые запросы, рисуют текст внутри изображений и работают с 14 референсами одновременно.</p>
+          <p>Перед генерацией модели «думают» — внутренний reasoning-процесс разбирает промт на части и выстраивает сцену. Поэтому они так хорошо реагируют на детальные описания.</p>
+          <div style="margin-top:32px" class="time-badge">20 минут — и ты в теме</div>
+        </div>
+      </div>
+      <div>
+        <div class="label" style="margin-bottom:8px">Версии моделей</div>
+        <div class="intro-models">
+          <div class="model-card dark">
+            <div><div class="model-name">Nano Banana</div><div class="model-sub">Gemini 2.5 Flash Image</div></div>
+            <div class="model-tags"><div class="tag">Скорость</div><div class="tag">Черновики</div><div class="tag">~1MP</div></div>
+          </div>
+          <div class="model-card mid">
+            <div><div class="model-name">Nano Banana 2</div><div class="model-sub">Gemini 3.1 Flash Image</div></div>
+            <div class="model-tags"><div class="tag">До 4K</div><div class="tag">14 ref</div><div class="tag">Быстрый</div></div>
+          </div>
+          <div class="model-card red">
+            <div><div class="model-name">Nano Banana Pro</div><div class="model-sub">Gemini 3 Pro Image</div></div>
+            <div class="model-tags"><div class="tag">4K</div><div class="tag">Текст</div><div class="tag">Thinking</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ═══ CH1 BASICS ═══ -->
+<div id="basics">
+  <div class="chapter-hero">
+    <div class="chapter-num">01</div>
+    <div class="chapter-title-block"><div class="label label-pink">Уровень 1 — Основы</div><h2>Что такое промт</h2></div>
+  </div>
+  <div class="content-block" style="border-left-color:var(--black);background:#F0EDE8">
+    <div class="container" style="padding:0">
+      <div class="two-col-3-2" style="gap:48px">
+        <div>
+          <h3>Промт — это режиссёрский указ</h3>
+          <p>Не список слов через запятую. Nano Banana понимает язык — пиши предложениями, описывай сцену. Чем точнее ты описываешь кто, что делает, где и как выглядит — тем ближе результат.</p>
+          <p style="margin-top:16px">Ключевое правило Google: <strong>описывай то, что хочешь видеть</strong>, а не то, чего не хочешь. «Пустая улица» работает лучше, чем «улица без машин».</p>
+          <div class="do-dont" style="margin-top:24px">
+            <div class="do-block">
+              <div class="label-top">✓ Правильно</div>
+              <div class="check-item"><span class="check-icon">→</span><span class="check-text">A matte black aerosol can with a bright red cap on a dark brushed metal surface</span></div>
+              <div class="check-item"><span class="check-icon">→</span><span class="check-text">An empty industrial garage with polished concrete floors at night</span></div>
+              <div class="check-item"><span class="check-icon">→</span><span class="check-text">Hard directional rim light from the right, deep shadow on the left</span></div>
+            </div>
+            <div class="dont-block">
+              <div class="label-top">✗ Не работает</div>
+              <div class="check-item"><span class="check-icon" style="color:var(--gray-dark)">×</span><span class="check-text" style="color:#555">spray can, black, studio, nice</span></div>
+              <div class="check-item"><span class="check-icon" style="color:var(--gray-dark)">×</span><span class="check-text" style="color:#555">no mess, no background, no people</span></div>
+              <div class="check-item"><span class="check-icon" style="color:var(--gray-dark)">×</span><span class="check-text" style="color:#555">good lighting</span></div>
+            </div>
+          </div>
+        </div>
+        <div id="arkanoid-wrap" style="position:relative;background:#1D252D;display:flex;flex-direction:column;overflow:hidden;min-height:480px;border:1px solid rgba(201,42,57,.25)">
+          <canvas id="arkanoid-canvas" style="display:block;width:100%;flex:1"></canvas>
+          <div id="ark-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(29,37,45,.88);z-index:2;cursor:pointer" onclick="arkStart()">
+            <div style="background:#c92a39;color:#1D252D;padding:14px 36px;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:2px solid transparent;transition:all .15s" onmouseover="this.style.borderColor='#F5F4EF'" onmouseout="this.style.borderColor='transparent'">Старт</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CH2 FORMULA ═══ -->
+<div id="formula">
+  <div class="chapter-hero">
+    <div class="chapter-num">02</div>
+    <div class="chapter-title-block"><div class="label label-pink">Уровень 2 — Формула</div><h2>Анатомия промта</h2></div>
+  </div>
+  <div class="content-block">
+    <div class="container" style="padding:0">
+      <p>Любой хороший промт состоит из шести блоков. Начни с первых трёх, добавляй остальные по мере необходимости.</p>
+      <div class="formula-box">
+        <div class="formula-text"><span>[</span>Subject<span>]</span> + <span>[</span>Action<span>]</span> + <span>[</span>Location<span>]</span><br>+ <span>[</span>Composition<span>]</span> + <span>[</span>Style<span>]</span> + <span>[</span>Editing instructions<span>]</span></div>
+      </div>
+      <div class="term-list">
+        <div class="term-item"><div class="term-en">Subject</div><div class="term-ru"><strong>Субъект</strong> — кто или что в кадре. Конкретно: не «робот», а «stoic robot barista with glowing blue optics».</div></div>
+        <div class="term-item"><div class="term-en">Action</div><div class="term-ru"><strong>Действие</strong> — что происходит. «Brewing coffee» vs просто «coffee». Движение оживляет сцену.</div></div>
+        <div class="term-item"><div class="term-en">Location</div><div class="term-ru"><strong>Место</strong> — где сцена. «In a futuristic cafe on Mars» — модель использует знания о мире, чтобы достроить контекст.</div></div>
+        <div class="term-item"><div class="term-en">Composition</div><div class="term-ru"><strong>Композиция</strong> — кадрирование. Extreme close-up, wide shot, portrait, low angle — ты режиссёр.</div></div>
+        <div class="term-item"><div class="term-en">Style</div><div class="term-ru"><strong>Стиль</strong> — общая эстетика. 3D animation, film noir, watercolor painting, editorial fashion photography…</div></div>
+        <div class="term-item"><div class="term-en">Editing</div><div class="term-ru"><strong>Правки</strong> — при редактировании: чётко укажи что менять и что оставить без изменений.</div></div>
+      </div>
+
+      <!-- PROMPT 01 -->
+      <div style="margin-top:40px">
+        <div class="label">Пример — полная формула в действии</div>
+        <div class="prompt-block">
+          <div class="prompt-texts">
+            <div class="prompt-en" data-shot="PRODUCT SHOT">
+              <div class="lang-tag">EN</div>
+              <p>A dramatic studio product shot of a <span class="h">matte black aerosol spray can</span> with a <span class="h">bright red cap and red accent stripe</span>, standing upright on a <span class="h">dark brushed steel surface</span>. <span class="h">Front-facing shot</span>, slightly elevated angle. <span class="h">Hard edge lighting from the right</span> creating a sharp specular highlight along the can body, deep shadow on the left. <span class="h">Commercial automotive product photography style</span>, high contrast, deep blacks, red accent dominates.</p>
+            </div>
+            <div class="prompt-ru">
+              <div class="lang-tag">RU</div>
+              <p>Драматичная студийная съёмка: <strong>матово-чёрный аэрозольный баллон</strong> с <strong>ярко-красной крышкой и красной полосой</strong>, стоит вертикально на <strong>тёмной поверхности из шлифованной стали</strong>. <strong>Фронтальный ракурс</strong>, слегка поднятая камера. <strong>Жёсткий боковой свет справа</strong> — острый блик вдоль корпуса, глубокая тень слева. <strong>Коммерческая съёмка автохимии</strong>, высокий контраст, глубокие чёрные, красный акцент доминирует.</p>
+            </div>
+          </div>
+          <div class="photo-slot">
+            <div class="photo-num-bar"><span class="pn">01</span><span class="pt">4:3 · 1K</span></div>
+            <div class="photo-area" style="background:none;border:none;padding:0"><img src="img/1.png" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+            <div class="photo-hint">AEROSOL PRODUCT SHOT</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ПРАКТИКА -->
+      <div style="margin-top:16px">
+        <div class="pink-block" style="color:var(--white)">
+          <h3>Практика — старт с минимума</h3>
+          <p style="color:var(--white)">Начни с 2–3 предложений: субъект + место + стиль. Запусти. Посмотри. Потом добавляй детали по одному блоку.</p>
+            <div style="margin-top:20px;background:rgba(0,0,0,.15);padding:20px">
+              <div style="font-family:var(--mono);font-size:10px;letter-spacing:.15em;margin-bottom:12px;text-transform:uppercase">Вход → выход после формулы</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 240px;gap:4px">
+                <div style="padding:16px;background:rgba(0,0,0,.1)">
+                  <div style="font-family:var(--mono);font-size:10px;margin-bottom:8px;text-transform:uppercase">Было</div>
+                  <p style="font-size:14px;line-height:1.7;font-style:italic;color:var(--white)">"моторное масло, двигатель, красиво"</p>
+                </div>
+                <div style="padding:16px;background:rgba(0,0,0,.2)">
+                  <div style="font-family:var(--mono);font-size:10px;margin-bottom:8px;text-transform:uppercase;font-weight:700">Стало</div>
+                  <p style="font-size:13px;line-height:1.7;font-family:var(--mono);color:var(--white)">A sleek 1L motor oil bottle with a metallic label on a dark carbon fiber surface. A blurred engine bay in the background. Product photography, hard directional lighting with red rim light, deep blacks, commercial automotive style.</p>
+                </div>
+                <img src="img/A sleek 1L motor oil.png" alt="A sleek 1L motor oil" style="grid-row:span 2;width:100%;height:100%;object-fit:cover;border:1px solid rgba(255,255,255,.1);display:block">
+                <div style="grid-column:span 2;background:rgba(0,0,0,.25);padding:12px">
+                  <div style="font-family:var(--mono);font-size:9px;margin-bottom:6px;text-transform:uppercase">RU перевод</div>
+                  <p style="font-size:12px;line-height:1.6;font-style:italic;color:var(--white)">Лаконичная бутылка моторного масла 1 л с металлической этикеткой на тёмной поверхности карбона. Моторный отсек на фоне, слегка размытый. Предметная съёмка, жёсткий направленный свет с красным контровым, глубокие чёрные, коммерческая автомобильная эстетика.</p>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CH3 PHOTO TERMS ═══ -->
+<div id="advanced">
+  <div class="chapter-hero">
+    <div class="chapter-num">03</div>
+    <div class="chapter-title-block"><div class="label label-pink">Уровень 3 — Продвинутые</div><h2>Камера, свет, материал</h2></div>
+  </div>
+  <div class="content-block">
+    <div class="container" style="padding:0">
+      <p>Nano Banana обучена на огромном массиве профессиональных фото. Когда ты используешь съёмочную терминологию — модель точно понимает, что ты хочешь.</p>
+
+      <div class="two-col" style="margin-top:32px">
+        <div style="background:var(--cream);padding:32px;border:2px solid var(--black)">
+          <div class="label" style="margin-bottom:20px">Углы и кадрирование</div>
+          <div class="term-list" style="margin-top:0">
+            <div class="term-item" style="padding:10px 0"><div class="term-en" style="min-width:160px;font-size:11px">Low angle shot</div><div class="term-ru" style="font-size:14px">Снизу вверх — монументальность</div></div>
+            <div class="term-item" style="padding:10px 0"><div class="term-en" style="min-width:160px;font-size:11px">Bird's eye view</div><div class="term-ru" style="font-size:14px">Сверху — планы, раскладки</div></div>
+            <div class="term-item" style="padding:10px 0"><div class="term-en" style="min-width:160px;font-size:11px">Dutch angle</div><div class="term-ru" style="font-size:14px">Наклон камеры — напряжение</div></div>
+            <div class="term-item" style="padding:10px 0"><div class="term-en" style="min-width:160px;font-size:11px">Extreme close-up</div><div class="term-ru" style="font-size:14px">Деталь вплотную — текстура</div></div>
+            <div class="term-item" style="padding:10px 0"><div class="term-en" style="min-width:160px;font-size:11px">Wide angle</div><div class="term-ru" style="font-size:14px">Широкий — пространство, масштаб</div></div>
+          </div>
+        </div>
+        <div style="background:var(--black);padding:32px">
+          <div class="label" style="color:var(--pink);margin-bottom:20px">Объективы и глубина</div>
+          <div class="term-list" style="margin-top:0">
+            <div class="term-item" style="padding:10px 0;border-color:#2a3540"><div class="term-en" style="min-width:160px;font-size:11px">85mm portrait lens</div><div class="term-ru" style="font-size:14px;color:var(--white)">Портрет, боке, нет искажений</div></div>
+            <div class="term-item" style="padding:10px 0;border-color:#2a3540"><div class="term-en" style="min-width:160px;font-size:11px">Macro lens</div><div class="term-ru" style="font-size:14px;color:var(--white)">Предметная съёмка вплотную</div></div>
+            <div class="term-item" style="padding:10px 0;border-color:#2a3540"><div class="term-en" style="min-width:160px;font-size:11px">Telephoto</div><div class="term-ru" style="font-size:14px;color:var(--white)">Сжатый фон, уличные сцены</div></div>
+            <div class="term-item" style="padding:10px 0;border-color:#2a3540"><div class="term-en" style="min-width:160px;font-size:11px">f/1.8, shallow DOF</div><div class="term-ru" style="font-size:14px;color:var(--white)">Мягкий размытый фон</div></div>
+            <div class="term-item" style="padding:10px 0;border-color:#2a3540"><div class="term-en" style="min-width:160px;font-size:11px">Fish-eye lens</div><div class="term-ru" style="font-size:14px;color:var(--white)">Искажение, экшн-эффект</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIGHTING GRID -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:4px">
+        <div style="background:var(--black);padding:20px"><div style="font-family:var(--mono);font-size:11px;color:var(--pink);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Студийный</div><div style="font-size:14px;color:var(--white);line-height:1.8">Three-point softbox<br>High-key lighting<br>Ring light<br>Clamshell lighting</div><div style="font-size:12px;color:var(--gray-dark);margin-top:10px;line-height:1.8">Трёхточечный свет<br>Высокоключевой<br>Кольцевая лампа<br>«Ракушка»</div></div>
+        <div style="background:var(--slate);padding:20px"><div style="font-family:var(--mono);font-size:11px;color:var(--gray-dark);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Драматичный</div><div style="font-size:14px;color:var(--white);line-height:1.8">Chiaroscuro lighting<br>Low-key lighting<br>Rim lighting<br>Harsh shadows</div><div style="font-size:12px;color:var(--gray-dark);margin-top:10px;line-height:1.8">Кьяроскуро (барокко)<br>Низкокл. / тёмный<br>Контровой / ободок<br>Жёсткие тени</div></div>
+        <div style="background:#0f1a22;padding:20px"><div style="font-family:var(--mono);font-size:11px;color:var(--gray-dark);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Естественный</div><div style="font-size:14px;color:var(--white);line-height:1.8">Golden hour light<br>Soft window light<br>Overcast diffused<br>Backlighting</div><div style="font-size:12px;color:var(--gray-dark);margin-top:10px;line-height:1.8">«Золотой час»<br>Мягкий оконный<br>Пасмурный рассеян.<br>Контровой</div></div>
+      </div>
+
+      <!-- MATERIAL -->
+      <div class="pink-block" style="margin-top:4px;color:var(--white)">
+        <h3>Материальность — главный апгрейд</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr 340px;gap:4px;margin-top:16px">
+            <div style="background:rgba(0,0,0,.15);padding:12px">
+              <div style="font-family:var(--mono);font-size:9px;letter-spacing:.15em;opacity:.6;margin-bottom:10px">✗ СЛАБО</div>
+              <div style="font-size:10px;line-height:1.5">spray can, engine part, oil bottle, surface, background</div>
+            </div>
+            <div style="background:rgba(0,0,0,.25);padding:12px">
+              <div style="font-family:var(--mono);font-size:9px;letter-spacing:.15em;margin-bottom:10px;font-weight:700">✓ СИЛЬНО</div>
+              <div style="font-size:10px;line-height:1.5;font-weight:600">matte black aerosol can with embossed logo, bright red plastic cap, chrome-plated aluminium throttle body with machined grooves, translucent amber synthetic motor oil in a frosted plastic bottle, dark carbon fiber surface with woven texture pattern, seamless deep black studio backdrop with red edge lighting</div>
+            </div>
+            <img src="img/matte black aerosol can.png" alt="matte black aerosol can" style="grid-row:span 2;width:100%;height:100%;object-fit:cover;border:1px solid rgba(255,255,255,.1);display:block">
+            <div style="grid-column:span 2;background:rgba(0,0,0,.2);padding:12px">
+              <div style="font-family:var(--mono);font-size:9px;letter-spacing:.15em;margin-bottom:8px;opacity:.7;text-transform:uppercase">На русском — та же логика</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:10px;line-height:1.5;font-style:italic">
+                <div style="opacity:.7">баллон, деталь двигателя, бутылка масла, поверхность, фон</div>
+                <div style="font-weight:600;font-style:normal">матово-чёрный аэрозольный баллон с тиснёным лого, ярко-красная пластиковая крышка, хромированный алюминиевый дроссельный узел с машинными канавками, прозрачное янтарное синтетическое масло в матовой пластиковой бутылке, тёмная карбоновая поверхность с плетёным рисунком, бесшовный глубокий чёрный задник с красной контровой подсветкой</div>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <!-- FILM STOCKS -->
+      <div style="margin-top:4px;background:var(--cream);border:2px solid var(--black);padding:32px">
+        <div class="label" style="margin-bottom:20px">Камеры и плёнка — эстетика одним словом</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <div style="background:var(--black);color:var(--white);padding:10px 16px;font-family:var(--mono);font-size:12px">Fujifilm X100V</div>
+          <div style="background:var(--black);color:var(--white);padding:10px 16px;font-family:var(--mono);font-size:12px">Disposable camera</div>
+          <div style="background:var(--black);color:var(--white);padding:10px 16px;font-family:var(--mono);font-size:12px">GoPro fisheye</div>
+          <div style="background:var(--black);color:var(--white);padding:10px 16px;font-family:var(--mono);font-size:12px">Medium-format analog film</div>
+          <div style="background:var(--black);color:var(--white);padding:10px 16px;font-family:var(--mono);font-size:12px">1980s color film, slightly grainy</div>
+          <div style="background:var(--black);color:var(--white);padding:10px 16px;font-family:var(--mono);font-size:12px">Cinematic teal color grade</div>
+          <div style="background:var(--black);color:var(--white);padding:10px 16px;font-family:var(--mono);font-size:12px">Kodak Portra 400</div>
+          <div style="background:var(--black);color:var(--white);padding:10px 16px;font-family:var(--mono);font-size:12px">Shot on ARRI Alexa</div>
+        </div>
+        <div style="margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--gray-dark);line-height:1.9">
+          Fujifilm X100V — тёплые живые цвета, Street-эстетика &nbsp;·&nbsp; Disposable camera — вспышка, зерно, «вечеринка» &nbsp;·&nbsp; GoPro — широкий угол, экшн<br>
+          Kodak Portra 400 — плёночный портрет, нежные телесные тона &nbsp;·&nbsp; ARRI Alexa — кино, глубокий тоновый диапазон
+        </div>
+      </div>
+
+      <!-- PROMPT 02 -->
+      <div style="margin-top:24px">
+        <div class="label">Пример — макро деталь, металл, свет</div>
+        <div class="prompt-block">
+          <div class="prompt-texts">
+            <div class="prompt-en" data-shot="MACRO / ENGINE DETAIL">
+              <div class="lang-tag">EN</div>
+              <p>A <span class="h">macro close-up shot</span> of a polished <span class="h">chrome motorcycle engine casing</span>, intricate cooling fins and casting marks clearly visible. <span class="h">Hard rim lighting</span> from behind creating a razor-thin white edge on chrome surfaces. Shot on <span class="h">100mm macro lens</span>, f/8, pin-sharp throughout. <span class="h">Chiaroscuro lighting</span>, deep black background. Automotive editorial photography, <span class="h">metallic textures rendered with extreme precision</span>.</p>
+            </div>
+            <div class="prompt-ru">
+              <div class="lang-tag">RU</div>
+              <p><strong>Макро крупный план</strong> полированного <strong>хромированного корпуса мотоциклетного двигателя</strong> — рёбра охлаждения, следы литья во всех деталях. <strong>Жёсткий контровой свет</strong> сзади — тонкий белый контур на хромированных поверхностях. <strong>100 мм макрообъектив</strong>, f/8, максимальная резкость. <strong>Кьяроскуро</strong>, глубокий чёрный фон. <strong>Металлические текстуры переданы с предельной точностью</strong>.</p>
+            </div>
+          </div>
+          <div class="photo-slot">
+            <div class="photo-num-bar"><span class="pn">02</span><span class="pt">4:3 · 1K</span></div>
+            <div class="photo-area"><img src="img/2.png" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+            <div class="photo-hint">MACRO ENGINE DETAIL</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CH4 EDITING ═══ -->
+  <div class="chapter-hero">
+    <div class="chapter-num">04</div>
+    <div class="chapter-title-block"><div class="label label-pink">Уровень 4 — Редактирование</div><h2>Изменяй, не разрушай</h2></div>
+  </div>
+  <div class="content-block">
+    <div class="container" style="padding:0">
+      <p>NB умеет редактировать существующее изображение по текстовой команде — без масок, в разговорном режиме. Главное правило: явно укажи <strong>что менять</strong> и <strong>что оставить.</strong></p>
+      <div class="formula-box" style="margin-top:32px">
+        <div class="formula-text"><span>[</span>Что изменить<span>]</span> + <span>"</span>keep everything else exactly the same<span>"</span></div>
+      </div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--gray-dark);margin-top:8px;padding:8px 16px;background:var(--cream);border-left:3px solid var(--gray)">Перевод: [что изменить] + «всё остальное оставь точно таким же»</div>
+      <div class="workflow-steps" style="margin-top:24px">
+        <div class="workflow-step">
+          <div class="step-num-block">1</div>
+          <div class="step-content">
+            <h4>Простое удаление</h4>
+            <p>"Remove the man from the background. Keep the lighting, composition, and all other elements exactly the same."</p>
+            <p style="margin-top:8px;font-style:italic;color:var(--gray-dark)">«Убери мужчину с фона. Свет, композицию и все остальные элементы оставь без изменений.»</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-num-block">2</div>
+          <div class="step-content">
+            <h4>Замена элемента</h4>
+            <p>"Change the tie from red to forest green. Keep the fabric texture and knot style identical. Do not alter anything else."</p>
+            <p style="margin-top:8px;font-style:italic;color:var(--gray-dark)">«Смени галстук с красного на лесной зелёный. Текстуру ткани и форму узла сохрани идентичными. Больше ничего не трогай.»</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-num-block">3</div>
+          <div class="step-content">
+            <h4>Смена стиля</h4>
+            <p>"Transform this into a Van Gogh oil painting — swirling brush strokes, vivid complementary colors, textured impasto. Preserve the original composition."</p>
+            <p style="margin-top:8px;font-style:italic;color:var(--gray-dark)">«Преврати в масляную картину в стиле Ван Гога — вихревые мазки, яркие контрастные цвета, фактурный импасто. Исходную композицию сохрани.»</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-num-block">4</div>
+          <div class="step-content">
+            <h4>Итеративный диалог</h4>
+            <p>После первой генерации продолжай в том же чате. Модель держит контекст предыдущего изображения.</p>
+            <p style="margin-top:8px;color:var(--gray-dark)">→ «Добавь туман у основания» → «Сделай небо темнее» → «Убери ветку справа»</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CH5 REFERENCES ═══ -->
+  <div class="chapter-hero">
+    <div class="chapter-num">05</div>
+    <div class="chapter-title-block"><div class="label label-pink">Уровень 5 — Референсы</div><h2>До 14 изображений</h2></div>
+  </div>
+  <div class="content-block">
+    <div class="container" style="padding:0">
+      <p>NB Pro и Nano Banana 2 принимают до 14 референсных изображений. Ключевое — явно указать роль каждого.</p>
+      <div class="formula-box" style="margin-top:24px">
+        <div class="formula-text"><span>[</span>Reference images<span>]</span> + <span>[</span>Relationship instructions<span>]</span> + <span>[</span>New scenario<span>]</span></div>
+      </div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--gray-dark);margin-top:8px;padding:8px 16px;background:var(--cream);border-left:3px solid var(--gray)">[Референсные изображения] + [инструкция об их роли] + [новый сценарий]</div>
+
+      <div class="term-list" style="margin-top:24px">
+        <div class="term-item"><div class="term-en" style="min-width:220px">Персонаж</div><div class="term-ru">«Use image 1 as the character reference. Place this character in [новая сцена]. Keep the face, hair, and clothing identical.» — Используй изображение 1 как референс персонажа. Лицо, волосы, одежда — идентично.</div></div>
+        <div class="term-item"><div class="term-en" style="min-width:220px">Продукт + среда</div><div class="term-ru">«Place the product from image 1 into the environment from image 2. Match the lighting direction and color temperature.» — Продукт из img 1 помести в среду из img 2, совпади по свету и цветовой температуре.</div></div>
+        <div class="term-item"><div class="term-en" style="min-width:220px">Скетч → рендер</div><div class="term-ru">«Use image 1 as structure, image 2 as texture sample.» — Img 1 = геометрия, img 2 = материал поверхности.</div></div>
+        <div class="term-item"><div class="term-en" style="min-width:220px">Блендинг</div><div class="term-ru">Для смешивания стилей Google рекомендует не более 3 изображений — результат более предсказуем.</div></div>
+      </div>
+
+      <!-- PROMPT 03 -->
+      <div style="margin-top:32px">
+        <div class="label">Пример — продукт + среда → рекламный кадр</div>
+        <div class="prompt-block">
+          <div class="prompt-texts">
+            <div class="prompt-en" data-shot="PRODUCT + ENVIRONMENT">
+              <div class="lang-tag">EN</div>
+              <p><span class="h">Use the aerosol can from image 1 as the product reference</span> and <span class="h">image 2 as the environment mood</span>. Place the aerosol can on a <span class="h">dark wet asphalt surface at night</span>. Reflective puddles with <span class="h">neon red reflections</span>, blurred urban background with bokeh. <span class="h">Match the lighting direction</span> from image 2. Commercial automotive advertising aesthetic, dramatic and cinematic.</p>
+            </div>
+            <div class="prompt-ru">
+              <div class="lang-tag">RU</div>
+              <p><strong>Возьми аэрозольный баллон из изображения 1</strong> как референс продукта, <strong>изображение 2 — как стиль среды</strong>. Помести баллон на <strong>тёмный мокрый асфальт ночью</strong>. Отражающие лужи с <strong>неоново-красными бликами</strong>, размытый городской фон с боке. <strong>Совпади по направлению света</strong> из изображения 2. Коммерческая автомобильная реклама, драматично и кинематографично.</p>
+            </div>
+          </div>
+          <div class="photo-slot">
+            <div class="photo-num-bar"><span class="pn">03</span><span class="pt">4:3 · 1K</span></div>
+            <div class="photo-area"><img src="img/3.png" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+            <div class="photo-hint">PRODUCT + ENVIRONMENT</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASPECT RATIOS -->
+      <div style="margin-top:40px">
+        <div class="label">Форматы и разрешения</div>
+        <div class="aspect-grid">
+          <div class="aspect-item"><div class="aspect-box" style="width:40px;height:40px"></div><div class="aspect-label">1:1</div></div>
+          <div class="aspect-item"><div class="aspect-box" style="width:57px;height:40px"></div><div class="aspect-label">3:2</div></div>
+          <div class="aspect-item"><div class="aspect-box" style="width:71px;height:40px"></div><div class="aspect-label">16:9</div></div>
+          <div class="aspect-item"><div class="aspect-box" style="width:84px;height:40px"></div><div class="aspect-label">21:9</div></div>
+          <div class="aspect-item"><div class="aspect-box" style="width:32px;height:40px"></div><div class="aspect-label">4:5</div></div>
+          <div class="aspect-item"><div class="aspect-box" style="width:22px;height:40px"></div><div class="aspect-label">9:16</div></div>
+          <div class="aspect-item"><div class="aspect-box" style="width:10px;height:40px"></div><div class="aspect-label">1:4*</div></div>
+        </div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--gray-dark);margin-top:12px">* 1:4, 4:1, 1:8, 8:1 — только Nano Banana 2 (3.1 Flash). Разрешения: 512px / 1K / 2K / 4K.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CH6 TEXT IN IMAGE ═══ -->
+  <div class="chapter-hero">
+    <div class="chapter-num">06</div>
+    <div class="chapter-title-block"><div class="label label-pink">Уровень 6 — Текст</div><h2>Читаемые надписи</h2></div>
+  </div>
+  <div class="content-block">
+    <div class="container" style="padding:0">
+      <p>Nano Banana Pro — одна из лучших моделей по рендерингу текста. Четыре правила:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:32px">
+        <div style="background:var(--black);padding:28px"><div style="font-family:var(--mono);font-size:32px;font-weight:700;color:var(--pink);line-height:1;margin-bottom:16px">01</div><h4 style="font-size:15px;font-weight:700;color:var(--white);text-transform:uppercase;margin-bottom:8px">Текст в кавычках</h4><p style="font-size:13px;color:rgba(245,244,239,.7);line-height:1.6">Оборачивай нужные слова в кавычки:<br><code style="color:var(--pink)">"GLOW"</code>, <code style="color:var(--pink)">"10% OFF"</code>, <code style="color:var(--pink)">"Your First Order"</code><br><span style="opacity:.5;font-style:italic">«GLOW», «10% OFF», «Ваш первый заказ»</span></p></div>
+        <div style="background:var(--slate);padding:28px"><div style="font-family:var(--mono);font-size:32px;font-weight:700;color:var(--pink);line-height:1;margin-bottom:16px">02</div><h4 style="font-size:15px;font-weight:700;color:var(--white);text-transform:uppercase;margin-bottom:8px">Описывай шрифт</h4><p style="font-size:13px;color:rgba(245,244,239,.7);line-height:1.8">bold sans-serif · flowing script · heavy blocky Impact · thin minimalist Century Gothic · elegant Brush Script<br><span style="opacity:.5;font-style:italic">жирный рубленый · витиеватый курсив · массивный Impact · тонкий Century Gothic · элегантный Brush Script</span></p></div>
+        <div style="background:var(--slate);padding:28px"><div style="font-family:var(--mono);font-size:32px;font-weight:700;color:var(--pink);line-height:1;margin-bottom:16px">03</div><h4 style="font-size:15px;font-weight:700;color:var(--white);text-transform:uppercase;margin-bottom:8px">Позиция и размер</h4><p style="font-size:13px;color:rgba(245,244,239,.7);line-height:1.8">top-left corner · filling the center · small subtitle below · large banner across the top<br><span style="opacity:.5;font-style:italic">левый верхний угол · занимает центр кадра · мелкий подзаголовок снизу · крупный баннер вверху</span></p></div>
+        <div style="background:var(--black);padding:28px"><div style="font-family:var(--mono);font-size:32px;font-weight:700;color:var(--pink);line-height:1;margin-bottom:16px">04</div><h4 style="font-size:15px;font-weight:700;color:var(--white);text-transform:uppercase;margin-bottom:8px">Text-first хак</h4><p style="font-size:13px;color:rgba(245,244,239,.7);line-height:1.6">Сначала попроси Gemini сгенерировать текстовый контент, потом используй его в промте для изображения.</p></div>
+      </div>
+
+      <!-- PROMPT 04 -->
+      <div style="margin-top:32px">
+        <div class="label">Пример — продукт автохимии с типографикой</div>
+        <div class="prompt-block">
+          <div class="prompt-texts">
+            <div class="prompt-en" data-shot="AUTO PRODUCT / TYPOGRAPHY">
+              <div class="lang-tag">EN</div>
+              <p>A high-end commercial product shot of a <span class="h">sleek matte black aerosol spray can</span> with red accent label, standing on a <span class="h">dark reflective obsidian studio surface</span>. <span class="h">Hard edge studio lighting with red gel rim light</span>. Three text lines: top — <span class="h">"LAVR"</span> in a <span class="h">bold condensed sans-serif</span>; middle — <span class="h">"ENGINE CLEAN"</span> in a <span class="h">heavy blocky Impact font</span>; bottom — <span class="h">"Professional Formula"</span> in a <span class="h">thin minimalist geometric font</span>.</p>
+            </div>
+            <div class="prompt-ru">
+              <div class="lang-tag">RU</div>
+              <p>Высококачественная коммерческая съёмка: <strong>матово-чёрный аэрозольный баллон</strong> с красной этикеткой на <strong>тёмной отражающей поверхности обсидиан</strong>. <strong>Жёсткий студийный свет с красным гелевым контровым</strong>. Три строки текста: верх — <strong>«LAVR»</strong> жирным конденсированным <strong>Sans-serif</strong>; середина — <strong>«ENGINE CLEAN»</strong> тяжёлым <strong>Impact</strong>; низ — <strong>«Professional Formula»</strong> тонким геометрическим шрифтом.</p>
+            </div>
+          </div>
+          <div class="photo-slot">
+            <div class="photo-num-bar"><span class="pn">04</span><span class="pt">1:1 · 1K</span></div>
+            <div class="photo-area"><img src="img/4.png" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+            <div class="photo-hint">AUTO PRODUCT SHOT</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROMPT 05 -->
+      <div style="margin-top:8px">
+        <div class="label">Пример — типографический постер</div>
+        <div class="prompt-block">
+          <div class="prompt-texts">
+            <div class="prompt-en" data-shot="POSTER / TYPOGRAPHY">
+              <div class="lang-tag">EN</div>
+              <p>A typographic poster with a <span class="h">solid black background</span>. Bold letters spell <span class="h">"MOTOR"</span>, filling the center of the frame. <span class="h">The text acts as a cut-out window</span> — a close-up photograph of a <span class="h">polished chrome engine with red details</span> is visible <span class="h">only inside the letterforms</span>. High contrast, sharp edges, <span class="h">red accent glow</span> around the letters.</p>
+            </div>
+            <div class="prompt-ru">
+              <div class="lang-tag">RU</div>
+              <p>Типографический постер, <strong>чёрный фон</strong>. Крупные буквы <strong>«MOTOR»</strong> занимают центр кадра. <strong>Текст работает как вырез-окно</strong> — крупный план полированного <strong>хромированного двигателя с красными деталями</strong> виден <strong>только внутри букв</strong>. Максимальный контраст, чёткие края, <strong>красное свечение</strong> по контуру букв.</p>
+            </div>
+          </div>
+          <div class="photo-slot">
+            <div class="photo-num-bar"><span class="pn">05</span><span class="pt">9:16 · 1K</span></div>
+            <div class="photo-area"><img src="img/5.png" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+            <div class="photo-hint">POSTER</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CH7 CHATGPT ═══ -->
+<div id="chatgpt">
+  <div class="chapter-hero">
+    <div class="chapter-num">07</div>
+    <div class="chapter-title-block"><div class="label label-pink">Уровень 7 — Связки</div><h2>ChatGPT → Nano Banana</h2></div>
+  </div>
+  <div class="content-block">
+    <div class="container" style="padding:0">
+      <p>ChatGPT (GPT-4o / GPT-4.1) или Claude — идеальный «переводчик» между твоей идеей и готовым промтом для NB. Ты говоришь концепцию, LLM разворачивает детали.</p>
+      <div class="workflow-steps" style="margin-top:32px">
+        <div class="workflow-step">
+          <div class="step-num-block">1</div>
+          <div class="step-content"><h4>Опиши идею свободно</h4><p>Пиши как объяснял бы дизайнеру: «Постер для очистителя тормозов — тёмный, промышленный, красный акцент, агрессивно, текст «STOP DUST» крупно.»</p></div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-num-block">2</div>
+          <div class="step-content"><h4>Мета-промт генерирует NB-промт</h4><p>ChatGPT с правильным системным промтом разворачивает идею в детальный текст по формуле [Subject]+[Action]+[Location]+[Composition]+[Style]+[Camera]+[Lighting].</p></div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-num-block">3</div>
+          <div class="step-content"><h4>Копируй → генерируй в NB</h4><p>Вставляй готовый промт в Nano Banana. Если результат близкий, но не идеальный — итерируй прямо в NB через диалог.</p></div>
+        </div>
+      </div>
+
+      <!-- META PROMPTS -->
+      <div style="margin-top:40px">
+        <div class="label">Готовые мета-промты для ChatGPT — копируй как System Prompt</div>
+        <div class="meta-prompt" style="margin-top:16px">
+          <div class="mp-label">Мета-промт 1 — Универсальный генератор</div>
+          <p>You are an expert prompt engineer for <em>Nano Banana Pro (Gemini 3 Pro Image)</em>. When I describe an image idea in any language, output a detailed English prompt following this structure:<br><br>
+          1. <em>[Subject]</em> — specific description with material details<br>
+          2. <em>[Action]</em> — what is happening<br>
+          3. <em>[Location]</em> — environment with specific details<br>
+          4. <em>[Composition]</em> — camera angle, framing, lens<br>
+          5. <em>[Lighting]</em> — setup and mood<br>
+          6. <em>[Style]</em> — aesthetic, film stock, color grade<br><br>
+          Rules: descriptive sentences, not keywords. Positive framing only. Be specific about materials and textures. Output only the ready-to-use prompt.</p>
+        </div>
+        <div class="meta-prompt">
+          <div class="mp-label">Мета-промт 2 — Продуктовая фотография</div>
+          <p>You are a product photography art director writing prompts for <em>Nano Banana Pro</em>. I describe a product and its brand positioning. You write a detailed prompt for a studio product shot including: exact placement, surface material, backdrop, lighting setup (specific studio techniques), lens type, color grading, and mood. English, 4–6 sentences. Output only the prompt.</p>
+        </div>
+        <div class="meta-prompt">
+          <div class="mp-label">Мета-промт 3 — Постер с текстом</div>
+          <p>You are a graphic design director creating prompts for <em>Nano Banana Pro's text rendering</em>. I describe a poster concept. You output an English prompt with: visual composition, background, all text elements in double quotes with font style descriptions (e.g., <em>"SALE"</em> in bold condensed Impact, top center), color palette, lighting, overall style. 5–8 sentences. Output only the final prompt.</p>
+        </div>
+      </div>
+
+      <!-- PROMPT 06 — FULL CYCLE -->
+      <div style="margin-top:40px">
+        <div class="label">Пример полного цикла — аэрозоль автохимии</div>
+        <div style="display:grid;grid-template-columns:1fr;gap:2px;margin-top:16px">
+          <div style="background:var(--cream);border:2px solid var(--black);padding:24px">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--gray-dark);letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px">Вход (русский, свободно)</div>
+            <p style="font-size:15px;line-height:1.6;font-style:italic">"Хочу рекламный постер очистителя тормозов — тёмный, промышленный, красный акцент, слоган «STOP DUST» крупно"</p>
+          </div>
+        </div>
+        <div class="prompt-block" style="margin-top:2px">
+          <div class="prompt-texts">
+            <div class="prompt-en" data-shot="PRODUCT SHOT">
+              <div class="lang-tag">ChatGPT → NB промт</div>
+              <p>A single <span class="h">matte black aerosol spray can</span> with minimalist design, placed on a <span class="h">seamless dark grey studio surface</span>. <span class="h">45-degree angle</span>, <span class="h">hard directional softbox lighting</span>, specular highlight along the can edge, ultra-sharp focus, commercial product photography style. Monochromatic dark — except a single <span class="h">bright scarlet red cap and label stripe</span>. Large typographic overlay: <span class="h">"STOP DUST"</span> in <span class="h">heavy condensed Helvetica Neue Bold</span>, white, with a thin red underline, top third of frame. Commercial automotive advertising aesthetic, razor-sharp.</p>
+            </div>
+            <div class="prompt-ru">
+              <div class="lang-tag">RU</div>
+              <p>Один <strong>матово-чёрный аэрозольный баллон</strong>, минималистичный дизайн, на <strong>бесшовном тёмно-сером студийном фоне</strong>. Угол <strong>45°</strong>, <strong>жёсткий направленный свет через софтбокс</strong>, острый блик вдоль ребра баллона, предельная резкость. Монохром (тёмный), кроме <strong>ярко-алой крышки и полосы этикетки</strong>. Крупный текст: <strong>«STOP DUST»</strong> жирным конденсированным <strong>Helvetica Neue Bold</strong>, белый с красной подчёркивающей линией, в верхней трети. Коммерческая автомобильная реклама.</p>
+            </div>
+          </div>
+          <div class="photo-slot">
+            <div class="photo-num-bar"><span class="pn">06</span><span class="pt">4:3 · 1K</span></div>
+            <div class="photo-area"><img src="img/6.png" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+            <div class="photo-hint">PRODUCT SHOT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ COMPARISON ═══ -->
+<div id="comparison">
+  <div class="chapter-hero">
+    <div class="chapter-num">—</div>
+    <div class="chapter-title-block"><div class="label label-pink">Справочник</div><h2>v2 vs Pro</h2></div>
+  </div>
+  <div class="content-block">
+    <div class="container" style="padding:0">
+      <table class="compare-table">
+        <thead><tr><th>Параметр</th><th>Nano Banana 2 <span style="display:block;color:rgba(255,255,255,.4);font-size:9px">Gemini 3.1 Flash Image</span></th><th>Nano Banana Pro <span style="display:block;color:rgba(201,42,57,.7);font-size:9px">Gemini 3 Pro Image</span></th></tr></thead>
+        <tbody>
+          <tr><td>Скорость</td><td>⚡ Быстрый</td><td>🔄 Медленнее (reasoning)</td></tr>
+          <tr><td>Разрешение</td><td>512px → 4K</td><td>1K → 4K</td></tr>
+          <tr><td>Референсы</td><td>До 14 (10 объектов + 4 персонажа)</td><td>До 14 (6 объектов + 5 персонажей)</td></tr>
+          <tr><td>Текст в картинке</td><td>Хорошо</td><td><span class="badge-pro">Отлично</span> — лучший в классе</td></tr>
+          <tr><td>Reasoning</td><td>Базовый</td><td><span class="badge-pro">Глубокий</span> — разбирает сложные промты</td></tr>
+          <tr><td>Google Search</td><td>Есть</td><td>Есть + Image Search</td></tr>
+          <tr><td>Аспекты 1:4, 1:8</td><td>✓ Да</td><td>✗ Нет</td></tr>
+          <tr><td>Лучший для</td><td>Черновики, объём, итерации</td><td>Финальные визуалы, постеры, тексты</td></tr>
+        </tbody>
+      </table>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px">
+        <div style="background:var(--cream);border:2px solid var(--black);padding:28px">
+          <div class="label" style="margin-bottom:16px">Выбирай Nano Banana 2 когда</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+            <li style="display:flex;gap:10px;font-size:14px;line-height:1.5"><span style="color:var(--pink);font-family:var(--mono);font-weight:700">→</span>Нужно быстро перебрать 10+ вариантов</li>
+            <li style="display:flex;gap:10px;font-size:14px;line-height:1.5"><span style="color:var(--pink);font-family:var(--mono);font-weight:700">→</span>Работаешь в черновом режиме</li>
+            <li style="display:flex;gap:10px;font-size:14px;line-height:1.5"><span style="color:var(--pink);font-family:var(--mono);font-weight:700">→</span>Нужен нестандартный аспект (1:4, 1:8)</li>
+            <li style="display:flex;gap:10px;font-size:14px;line-height:1.5"><span style="color:var(--pink);font-family:var(--mono);font-weight:700">→</span>Бюджет ограничен</li>
+          </ul>
+        </div>
+        <div style="background:var(--pink);padding:28px;color:var(--white)">
+          <div class="label" style="color:var(--white);margin-bottom:16px">Выбирай Nano Banana Pro когда</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+            <li style="display:flex;gap:10px;font-size:14px;line-height:1.5;font-weight:600"><span style="font-family:var(--mono);font-weight:700">→</span>Постер или визуал с текстом</li>
+            <li style="display:flex;gap:10px;font-size:14px;line-height:1.5;font-weight:600"><span style="font-family:var(--mono);font-weight:700">→</span>Нужна консистентность персонажа</li>
+            <li style="display:flex;gap:10px;font-size:14px;line-height:1.5;font-weight:600"><span style="font-family:var(--mono);font-weight:700">→</span>Финальный продакшн-материал</li>
+            <li style="display:flex;gap:10px;font-size:14px;line-height:1.5;font-weight:600"><span style="font-family:var(--mono);font-weight:700">→</span>Сложный промт с деталями</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ticker-wrap"><div class="ticker"><span>Готов к тесту?</span><span>★</span><span>Порог 80%</span><span>★</span><span>12 вопросов</span><span>★</span><span>Готов к тесту?</span><span>★</span><span>Порог 80%</span><span>★</span><span>12 вопросов</span><span>★</span><span>Готов к тесту?</span><span>★</span><span>Порог 80%</span><span>★</span><span>12 вопросов</span><span>★</span></div></div>
+
+<!-- ═══ TEST ═══ -->
+<section id="test">
+  <div class="container">
+    <div class="test-header">
+      <div><h2>Тест<span>.</span></h2></div>
+      <div class="test-info">12 вопросов<br>Порог: 80% (10/12)<br>Скриншот результата</div>
+    </div>
+    <div class="test-progress-line"><div class="test-progress-fill" id="test-progress"></div></div>
+
+    <div class="test-question active" data-q="0">
+      <div class="q-num">Вопрос 01 / 12</div>
+      <div class="q-text">Какое главное правило Google по написанию промтов для Nano Banana?</div>
+      <div class="q-options">
+        <button class="q-option" data-correct="false"><span class="opt-letter">A</span>Писать как можно больше ключевых слов через запятую</button>
+        <button class="q-option" data-correct="true"><span class="opt-letter">B</span>Описывать сцену предложениями, используя позитивное формулирование</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">C</span>Использовать только английский язык и технические термины</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">D</span>Начинать промт с указания разрешения и аспекта</button>
+      </div>
+      <div class="q-feedback">Верно: Nano Banana — языковая модель, она понимает сцены. «Пустая улица» лучше, чем «улица, нет машин, нет людей».</div>
+    </div>
+
+    <div class="test-question" data-q="1">
+      <div class="q-num">Вопрос 02 / 12</div>
+      <div class="q-text">Какая формула лежит в основе хорошего промта?</div>
+      <div class="q-options">
+        <button class="q-option" data-correct="false"><span class="opt-letter">A</span>Style + Color + Mood + Size</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">B</span>Camera + Lens + Lighting + Film stock</button>
+        <button class="q-option" data-correct="true"><span class="opt-letter">C</span>Subject + Action + Location + Composition + Style</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">D</span>Объект + Цвет + Фон + Разрешение</button>
+      </div>
+      <div class="q-feedback">Верно: пять базовых блоков. Остальные термины — уточнения внутри этих блоков.</div>
+    </div>
+
+    <div class="test-question" data-q="2">
+      <div class="q-num">Вопрос 03 / 12</div>
+      <div class="q-text">Что из этого лучшее описание продукта для промта?</div>
+      <div class="q-options">
+        <button class="q-option" data-correct="false"><span class="opt-letter">A</span>"nice spray can"</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">B</span>"spray can, dark, premium"</button>
+        <button class="q-option" data-correct="true"><span class="opt-letter">C</span>"matte black aerosol can with embossed logo and bright red plastic cap"</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">D</span>"no cheap look, high quality product"</button>
+      </div>
+      <div class="q-feedback">Верно: конкретные материалы — покрытие, цвет, фактура — дают модели точный визуальный ориентир.</div>
+    </div>
+
+    <div class="test-question" data-q="3">
+      <div class="q-num">Вопрос 04 / 12</div>
+      <div class="q-text">Сколько референсных изображений максимально принимает Nano Banana Pro?</div>
+      <div class="q-options">
+        <button class="q-option" data-correct="false"><span class="opt-letter">A</span>3</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">B</span>5</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">C</span>10</button>
+        <button class="q-option" data-correct="true"><span class="opt-letter">D</span>14</button>
+      </div>
+      <div class="q-feedback">Верно: до 14 изображений (6 объектов + 5 персонажей у Pro, 10 объектов + 4 персонажа у NB2).</div>
+    </div>
+
+    <div class="test-question" data-q="4">
+      <div class="q-num">Вопрос 05 / 12</div>
+      <div class="q-text">Как правильно указать текст, который должен появиться в изображении?</div>
+      <div class="q-options">
+        <button class="q-option" data-correct="false"><span class="opt-letter">A</span>Написать текст капслоком в конце промта</button>
+        <button class="q-option" data-correct="true"><span class="opt-letter">B</span>Обернуть текст в кавычки и описать стиль шрифта</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">C</span>Добавить тег #text перед нужными словами</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">D</span>Текст в изображениях NB не поддерживается</button>
+      </div>
+      <div class="q-feedback">Верно: «GLOW» в кавычках + «flowing Brush Script font» — модель знает что и каким шрифтом писать.</div>
+    </div>
+
+    <div class="test-question" data-q="5">
+      <div class="q-num">Вопрос 06 / 12</div>
+      <div class="q-text">Какой угол съёмки лучше всего передаёт монументальность и масштаб объекта?</div>
+      <div class="q-options">
+        <button class="q-option" data-correct="false"><span class="opt-letter">A</span>Bird's eye view</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">B</span>Dutch angle</button>
+        <button class="q-option" data-correct="true"><span class="opt-letter">C</span>Low angle shot</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">D</span>Extreme close-up</button>
+      </div>
+      <div class="q-feedback">Верно: low angle — съёмка снизу вверх — делает объект монументальным и внушительным.</div>
+    </div>
+
+    <div class="test-question" data-q="6">
+      <div class="q-num">Вопрос 07 / 12</div>
+      <div class="q-text">Как правильно сформулировать промт при редактировании изображения?</div>
+      <div class="q-options">
+        <button class="q-option" data-correct="false"><span class="opt-letter">A</span>"Измени это изображение и сделай лучше"</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">B</span>"Убери лишнее, добавь нужное"</button>
+        <button class="q-option" data-correct="true"><span class="opt-letter">C</span>"Change the red cap to black. Keep the can body and label exactly the same."</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">D</span>"No red elements, I want black instead"</button>
+      </div>
+      <div class="q-feedback">Верно: при редактировании явно указывай что менять И что оставить — иначе модель может перерисовать всё.</div>
+    </div>
+
+    <div class="test-question" data-q="7">
+      <div class="q-num">Вопрос 08 / 12</div>
+      <div class="q-text">Какую версию NB выбрать для финального продакшн-постера с текстом?</div>
+      <div class="q-options">
+        <button class="q-option" data-correct="false"><span class="opt-letter">A</span>Nano Banana (Gemini 2.5 Flash) — он самый быстрый</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">B</span>Nano Banana 2 — он поддерживает больше аспектов</button>
+        <button class="q-option" data-correct="true"><span class="opt-letter">C</span>Nano Banana Pro — лучший текстовый рендеринг и thinking</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">D</span>Все версии одинаково подходят</button>
+      </div>
+      <div class="q-feedback">Верно: Pro = Gemini 3 Pro Image — лучший в классе по тексту в изображениях, reasoning и финальному качеству.</div>
+    </div>
+
+    <div class="test-question" data-q="8">
+      <div class="q-num">Вопрос 09 / 12</div>
+      <div class="q-text">Зачем использовать ChatGPT в связке с Nano Banana?</div>
+      <div class="q-options">
+        <button class="q-option" data-correct="false"><span class="opt-letter">A</span>ChatGPT генерирует изображения лучше NB</button>
+        <button class="q-option" data-correct="true"><span class="opt-letter">B</span>ChatGPT разворачивает расплывчатую идею в детальный NB-промт</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">C</span>ChatGPT переводит промты — NB не понимает русский</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">D</span>ChatGPT нужен для настройки разрешения и аспекта</button>
+      </div>
+      <div class="q-feedback">Верно: LLM как ассистент режиссёра — ты даёшь идею, он строит детальный промт по формуле.</div>
+    </div>
+
+    <div class="test-question" data-q="9">
+      <div class="q-num">Вопрос 10 / 12</div>
+      <div class="q-text">Какой термин освещения создаёт высококонтрастные тени в стиле живописи барокко?</div>
+      <div class="q-options">
+        <button class="q-option" data-correct="false"><span class="opt-letter">A</span>Three-point softbox setup</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">B</span>High-key lighting</button>
+        <button class="q-option" data-correct="true"><span class="opt-letter">C</span>Chiaroscuro lighting</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">D</span>Ring light</button>
+      </div>
+      <div class="q-feedback">Верно: chiaroscuro — техника барокко, резкий контраст света и тени, стиль Caravaggio.</div>
+    </div>
+
+    <div class="test-question" data-q="10">
+      <div class="q-num">Вопрос 11 / 12</div>
+      <div class="q-text">Какой аспект есть только у Nano Banana 2, но не у Pro?</div>
+      <div class="q-options">
+        <button class="q-option" data-correct="false"><span class="opt-letter">A</span>16:9</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">B</span>21:9</button>
+        <button class="q-option" data-correct="true"><span class="opt-letter">C</span>1:4 и 1:8</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">D</span>4:5</button>
+      </div>
+      <div class="q-feedback">Верно: суперширокие и вертикальные форматы 1:4, 4:1, 1:8, 8:1 — только у NB2 (Gemini 3.1 Flash).</div>
+    </div>
+
+    <div class="test-question" data-q="11">
+      <div class="q-num">Вопрос 12 / 12</div>
+      <div class="q-text">Выбери лучший промт для рекламной съёмки аэрозольного баллона:</div>
+      <div class="q-options">
+        <button class="q-option" data-correct="false"><span class="opt-letter">A</span>"баллон, чёрный, красивый, студия"</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">B</span>"no background, black spray can, good lighting, professional"</button>
+        <button class="q-option" data-correct="false"><span class="opt-letter">C</span>"aerosol can photo, high quality, 4K resolution"</button>
+        <button class="q-option" data-correct="true"><span class="opt-letter">D</span>"A single matte black aerosol spray can on a seamless dark grey studio surface. 45-degree angle, hard directional softbox lighting, specular highlight along the can body, ultra-sharp focus, commercial product photography style."</button>
+      </div>
+      <div class="q-feedback">Верно: вариант D использует формулу — материал, угол, освещение, стиль. Профессиональный product shot промт.</div>
+    </div>
+
+    <div class="test-nav">
+      <button class="btn-ghost" id="btn-prev" disabled>← Назад</button>
+      <div style="font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.3);letter-spacing:.1em" id="q-counter">1 / 12</div>
+      <button class="btn" id="btn-next" disabled>Далее →</button>
+    </div>
+
+    <div id="result-screen">
+      <div class="result-pct" id="result-pct">0%</div>
+      <div class="result-label" id="result-label">0 из 12 верных ответов</div>
+      <div class="result-pass" id="result-pass">—</div>
+      <div class="result-detail" id="result-detail"></div>
+      <div class="result-hint">Сделай скриншот и отправь результат</div>
+      <div><button class="btn-restart" onclick="restartTest()">↺ Пройти снова</button></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Делаем промты</div>
+  <div class="footer-info">Nano Banana Pro / Gemini 3 Pro Image<br>Nano Banana 2 / Gemini 3.1 Flash Image<br>© 2026 — Курс по промтингу изображений</div>
+</footer>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement,s=d.scrollTop||document.body.scrollTop,t=d.scrollHeight-d.clientHeight;
+  document.getElementById('progress-bar').style.width=(s/t*100)+'%';
+});
+
+const questions=document.querySelectorAll('.test-question');
+const totalQ=questions.length;
+let current=0,answers=new Array(totalQ).fill(null),answered=new Array(totalQ).fill(false);
+const btnPrev=document.getElementById('btn-prev'),btnNext=document.getElementById('btn-next'),qCounter=document.getElementById('q-counter'),progressFill=document.getElementById('test-progress');
+
+function showQuestion(idx){
+  questions.forEach((q,i)=>{q.classList.remove('active');if(i===idx)q.classList.add('active');});
+  current=idx;
+  qCounter.textContent=(idx+1)+' / '+totalQ;
+  progressFill.style.width=(idx/totalQ*100)+'%';
+  btnPrev.disabled=idx===0;
+  btnNext.textContent=idx===totalQ-1?'Результат →':'Далее →';
+  btnNext.disabled=!answered[idx];
+}
+
+function handleAnswer(qEl,btn,isCorrect,qIdx){
+  if(answered[qIdx])return;
+  answered[qIdx]=true;answers[qIdx]=isCorrect;
+  qEl.querySelectorAll('.q-option').forEach(b=>b.classList.add('disabled'));
+  qEl.querySelectorAll('.q-option').forEach(b=>{if(b.dataset.correct==='true')b.classList.add('correct');});
+  if(!isCorrect)btn.classList.add('wrong');
+  const fb=qEl.querySelector('.q-feedback');
+  fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+  btnNext.disabled=false;
+}
+
+questions.forEach((qEl,qIdx)=>{
+  qEl.querySelectorAll('.q-option').forEach(btn=>{
+    btn.addEventListener('click',()=>handleAnswer(qEl,btn,btn.dataset.correct==='true',qIdx));
+  });
+});
+
+btnNext.addEventListener('click',()=>{if(current===totalQ-1)showResult();else showQuestion(current+1);});
+btnPrev.addEventListener('click',()=>{if(current>0)showQuestion(current-1);});
+
+function showResult(){
+  questions.forEach(q=>q.style.display='none');
+  document.querySelector('.test-nav').style.display='none';
+  document.querySelector('.test-progress-line').style.display='none';
+  const correct=answers.filter(a=>a===true).length,pct=Math.round(correct/totalQ*100),passed=pct>=80;
+  document.getElementById('result-pct').textContent=pct+'%';
+  document.getElementById('result-label').textContent=correct+' из '+totalQ+' верных ответов';
+  const p=document.getElementById('result-pass');
+  p.textContent=passed?'✓ Тест пройден':'✗ Тест не пройден';
+  p.className='result-pass '+(passed?'pass':'fail');
+  document.getElementById('result-detail').textContent=passed?'Отличный результат. Ты знаешь как работать с Nano Banana.':'Нужно ещё '+(Math.ceil(totalQ*0.8)-correct)+' правильных ответов до порога. Перечитай гайд и попробуй снова.';
+  const s=document.getElementById('result-screen');s.classList.add('show');s.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function restartTest(){
+  current=0;answers=new Array(totalQ).fill(null);answered=new Array(totalQ).fill(false);
+  questions.forEach(qEl=>{
+    qEl.style.display='';
+    qEl.querySelectorAll('.q-option').forEach(b=>b.classList.remove('correct','wrong','disabled'));
+    const fb=qEl.querySelector('.q-feedback');fb.classList.remove('show','correct-fb','wrong-fb');
+  });
+  document.querySelector('.test-nav').style.display='';
+  document.querySelector('.test-progress-line').style.display='';
+  document.getElementById('result-screen').classList.remove('show');
+  showQuestion(0);document.getElementById('test').scrollIntoView({behavior:'smooth'});
+}
+showQuestion(0);
+
+(function(){
+  var area=document.getElementById('hero-orbs');
+  if(!area)return;
+  area.classList.add('hero-orbs-active');
+  var orbs=area.querySelectorAll('.hero-orb');
+  var fts=area.querySelectorAll('.hero-float-text');
+  var sizes=[220,160,280,120,200,180];
+  var data=[];
+  for(var i=0;i<orbs.length;i++){
+    var s=sizes[i]||180;
+    orbs[i].style.width=s+'px';
+    orbs[i].style.height=s+'px';
+    var angle=Math.random()*Math.PI*2;
+    var spd=.3+Math.random()*.5;
+    data.push({
+      el:orbs[i],x:Math.random()*(area.offsetWidth-s),y:Math.random()*(area.offsetHeight-s),
+      vx:Math.cos(angle)*spd,vy:Math.sin(angle)*spd,
+      phase:Math.random()*Math.PI*2,phaseY:Math.random()*Math.PI*2,
+      freqX:.01+Math.random()*.015,freqY:.008+Math.random()*.012,
+      ampX:.02+Math.random()*.03,ampY:.015+Math.random()*.025,
+      baseSpd:spd,size:s,rot:0,rotSpd:0
+    });
+  }
+  var ftData=[];
+  for(var j=0;j<fts.length;j++){
+    var a2=Math.random()*Math.PI*2;
+    var spd2=.4+Math.random()*.4;
+    ftData.push({
+      el:fts[j],x:Math.random()*(area.offsetWidth-120),y:Math.random()*(area.offsetHeight-20),
+      vx:Math.cos(a2)*spd2,vy:Math.sin(a2)*spd2,
+      phase:Math.random()*Math.PI*2,phaseY:Math.random()*Math.PI*2,
+      freqX:.012+Math.random()*.01,freqY:.009+Math.random()*.008,
+      ampX:.02+Math.random()*.02,ampY:.015+Math.random()*.015,
+      baseSpd:spd2,size:120,
+      rot:(Math.random()-.5)*20,rotSpd:(Math.random()-.5)*.15
+    });
+  }
+  var mouseX=-9999,mouseY=-9999;
+  area.addEventListener('mousemove',function(e){
+    var r=area.getBoundingClientRect();
+    mouseX=e.clientX-r.left;
+    mouseY=e.clientY-r.top;
+  });
+  area.addEventListener('mouseleave',function(){mouseX=-9999;mouseY=-9999;});
+  function tickItem(d,w,h){
+    d.phase+=d.freqX;
+    d.phaseY+=d.freqY;
+    d.vx+=Math.sin(d.phase)*d.ampX;
+    d.vy+=Math.cos(d.phaseY)*d.ampY;
+    var cx=d.x+d.size/2,cy=d.y+d.size/2;
+    var dx=cx-mouseX,dy=cy-mouseY;
+    var dist=Math.sqrt(dx*dx+dy*dy);
+    var repelR=250;
+    if(dist<repelR&&dist>1){
+      var force=(1-dist/repelR)*6;
+      d.vx+=(dx/dist)*force;
+      d.vy+=(dy/dist)*force;
+    }
+    var spd=Math.sqrt(d.vx*d.vx+d.vy*d.vy);
+    var minSpd=.3,maxSpd=2.5;
+    if(spd<minSpd&&spd>0){d.vx=d.vx/spd*minSpd;d.vy=d.vy/spd*minSpd;}
+    if(spd>maxSpd){d.vx=d.vx/spd*maxSpd;d.vy=d.vy/spd*maxSpd;}
+    d.x+=d.vx;d.y+=d.vy;
+    var bounce=.8;
+    if(d.x<=0){d.x=0;d.vx=Math.abs(d.vx)*bounce;}
+    if(d.x>=w-d.size){d.x=w-d.size;d.vx=-Math.abs(d.vx)*bounce;}
+    if(d.y<=0){d.y=0;d.vy=Math.abs(d.vy)*bounce;}
+    if(d.y>=h-d.size){d.y=h-d.size;d.vy=-Math.abs(d.vy)*bounce;}
+    d.rot+=d.rotSpd;
+  }
+  function tick(){
+    var w=area.offsetWidth,h=area.offsetHeight;
+    for(var i=0;i<data.length;i++){
+      tickItem(data[i],w,h);
+      data[i].el.style.transform='translate('+data[i].x+'px,'+data[i].y+'px)';
+    }
+    for(var j=0;j<ftData.length;j++){
+      tickItem(ftData[j],w,h);
+      ftData[j].el.style.transform='translate('+ftData[j].x+'px,'+ftData[j].y+'px) rotate('+ftData[j].rot+'deg)';
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+</script>
+<script>
+(function(){
+  var canvas=document.getElementById('arkanoid-canvas');
+  var wrap=document.getElementById('arkanoid-wrap');
+  var overlay=document.getElementById('ark-overlay');
+  var ctx=canvas.getContext('2d');
+  var phrases=['правки от заказчика','хуевый промт','кривое тз','кончилось кофе','слетел шрифт','очень срочная задача','задача срочнее','поиграем с шрифтами','бредик от коллег'];
+  var C_N={bg:'#1D252D',ball:'#c92a39',plat:'#1D252D',platB:'#c92a39',brick:'#c92a39',brickT:'#1D252D',score:'#F5F4EF',overlay:'rgba(29,37,45,.88)'};
+  var C_I={bg:'#F5F4EF',ball:'#1D252D',plat:'#c92a39',platB:'#1D252D',brick:'#1D252D',brickT:'#c92a39',score:'#1D252D',overlay:'rgba(245,244,239,.88)'};
+  var inv=false,running=false,score=0,pIdx=0,animId,gameOver=false;
+  var ball,plat,brick;
+  function c(){return inv?C_I:C_N}
+  function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath()}
+  function resize(){
+    var r=wrap.getBoundingClientRect();
+    canvas.width=r.width;canvas.height=r.height;
+    if(plat){plat.baseW=r.width*.32;plat.y=r.height-28}
+  }
+  function measureBrick(text){
+    ctx.font='700 11px "Space Mono",monospace';
+    var tw=ctx.measureText(text.toUpperCase()).width;
+    return tw+28;
+  }
+  function randomBrickPos(bw){
+    var w=canvas.width;
+    var margin=8;
+    brick.w=bw;
+    brick.x=margin+Math.random()*(w-bw-margin*2);
+    brick.y=16;
+  }
+  function init(){
+    resize();
+    var w=canvas.width,h=canvas.height;
+    ball={x:w/2,y:h-60,r:7,speed:2,dx:0,dy:0};
+    var a=-Math.PI/2+(Math.random()-.5)*1.2;
+    ball.dx=ball.speed*Math.cos(a);
+    ball.dy=ball.speed*Math.sin(a);
+    if(ball.dy>0)ball.dy=-ball.dy;
+    plat={w:w*.32,h:10,x:w/2-w*.16,baseW:w*.32,y:h-28};
+    brick={x:0,y:0,w:0,h:34};
+    var bw=measureBrick(phrases[0]);
+    brick.x=w/2-bw/2;brick.y=20;brick.w=bw;
+    score=0;pIdx=0;inv=false;gameOver=false;
+  }
+  function showOverlay(title,btnText){
+    running=false;
+    var cl=c();
+    overlay.style.display='flex';
+    overlay.style.background=cl.overlay;
+    overlay.innerHTML='<div style="text-align:center"><div style="font-family:\'Space Mono\',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:'+(inv?'#1D252D':'#F5F4EF')+';margin-bottom:8px">СЧЁТ</div><div style="font-family:\'Space Mono\',monospace;font-size:64px;font-weight:700;line-height:1;color:#c92a39;margin-bottom:24px">'+score+'</div><div style="font-family:\'Space Mono\',monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:'+(inv?'#1D252D':'#F5F4EF')+';margin-bottom:20px">'+title+'</div><div style="background:#c92a39;color:#1D252D;padding:14px 36px;font-family:\'Space Mono\',monospace;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;display:inline-block;border:2px solid transparent;transition:all .15s" onmouseover="this.style.borderColor=\'#F5F4EF\'" onmouseout="this.style.borderColor=\'transparent\'" onclick="arkStart()">'+btnText+'</div></div>';
+  }
+  window.arkStart=function(){
+    if(animId)cancelAnimationFrame(animId);
+    overlay.style.display='none';
+    init();running=true;loop();
+  };
+  function draw(){
+    var cl=c(),w=canvas.width,h=canvas.height;
+    ctx.fillStyle=cl.bg;ctx.fillRect(0,0,w,h);
+    ctx.fillStyle=cl.brick;rr(brick.x,brick.y,brick.w,brick.h,4);ctx.fill();
+    ctx.fillStyle=cl.brickT;ctx.font='700 11px "Space Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(phrases[pIdx].toUpperCase(),brick.x+brick.w/2,brick.y+brick.h/2);
+    ctx.fillStyle=cl.score;ctx.textAlign='left';ctx.font='10px "Space Mono",monospace';
+    ctx.fillText('СЧЁТ',8,h-52);
+    ctx.font='700 20px "Space Mono",monospace';ctx.fillText(''+score,8,h-32);
+    ctx.fillStyle=cl.plat;rr(plat.x,plat.y,plat.w,plat.h,3);ctx.fill();
+    ctx.strokeStyle=cl.platB;ctx.lineWidth=1.5;rr(plat.x,plat.y,plat.w,plat.h,3);ctx.stroke();
+    ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fillStyle=cl.ball;ctx.fill();
+  }
+  function update(){
+    var w=canvas.width,h=canvas.height;
+    ball.x+=ball.dx;ball.y+=ball.dy;
+    if(ball.x-ball.r<=0){ball.dx=Math.abs(ball.dx);ball.x=ball.r}
+    if(ball.x+ball.r>=w){ball.dx=-Math.abs(ball.dx);ball.x=w-ball.r}
+    if(ball.y-ball.r<=0){ball.dy=Math.abs(ball.dy);ball.y=ball.r}
+    if(ball.dy>0&&ball.y+ball.r>=plat.y&&ball.y+ball.r<=plat.y+plat.h+6&&ball.x>=plat.x&&ball.x<=plat.x+plat.w){
+      ball.dy=-Math.abs(ball.dy);ball.y=plat.y-ball.r;
+      var hit=(ball.x-plat.x)/plat.w;
+      ball.dx=ball.dx+(hit-.5)*2;
+      var sp=Math.sqrt(ball.dx*ball.dx+ball.dy*ball.dy);
+      var ns=sp>0?ball.speed/sp:1;ball.dx*=ns;ball.dy*=ns;
+    }
+    if(ball.x+ball.r>=brick.x&&ball.x-ball.r<=brick.x+brick.w&&ball.y+ball.r>=brick.y&&ball.y-ball.r<=brick.y+brick.h){
+      var oL=ball.x+ball.r-brick.x,oR=brick.x+brick.w-(ball.x-ball.r);
+      var oT=ball.y+ball.r-brick.y,oB=brick.y+brick.h-(ball.y-ball.r);
+      var m=Math.min(oL,oR,oT,oB);
+      if(m===oT||m===oB){ball.dy=-ball.dy}else{ball.dx=-ball.dx}
+      score++;pIdx=(pIdx+1)%phrases.length;inv=!inv;
+      ball.speed+=0.3;
+      var sp=Math.sqrt(ball.dx*ball.dx+ball.dy*ball.dy);
+      if(sp>0){var r=ball.speed/sp;ball.dx*=r;ball.dy*=r}
+      plat.w*=.95;
+      var bw=measureBrick(phrases[pIdx]);
+      randomBrickPos(bw);
+    }
+    if(ball.y-ball.r>h){
+      showOverlay('ИГРА ОКОНЧЕНА','ЗАНОВО');
+    }
+  }
+  function loop(){if(!running)return;update();draw();animId=requestAnimationFrame(loop)}
+  canvas.addEventListener('mousemove',function(e){
+    if(!plat)return;
+    var r=canvas.getBoundingClientRect();var mx=e.clientX-r.left;
+    plat.x=Math.max(0,Math.min(canvas.width-plat.w,mx-plat.w/2));
+  });
+  canvas.addEventListener('touchmove',function(e){
+    if(!plat)return;
+    e.preventDefault();var r=canvas.getBoundingClientRect();var mx=e.touches[0].clientX-r.left;
+    plat.x=Math.max(0,Math.min(canvas.width-plat.w,mx-plat.w/2));
+  },{passive:false});
+  window.addEventListener('resize',function(){if(running)resize()});
+})();
+</script>
+</body>
+</html>
